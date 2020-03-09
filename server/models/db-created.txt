@@ -1,0 +1,26 @@
+CREATE TABLE Games
+(
+    GameId SERIAL PRIMARY KEY,
+    WinnerID int,
+    LoserID int,
+    WinnerPoints int,
+    LoserPoints int,
+    WinnerConfirm BOOL,
+    LoserConfirm BOOL,
+    Foreign Key (WinnerID) REFERENCES Users(UserID),
+    Foreign Key (LoserID) REFERENCES Users(UserID)
+)
+
+
+CREATE TABLE Users
+(
+    UserId SERIAL PRIMARY KEY,
+    Username VARCHAR(100),
+    Password VARCHAR(100),
+    Cohort int,
+    FullName VARCHAR(100)
+)
+
+
+URI:
+postgres://gkdkscwo:OEIF6xvG7T5duXS_7GlrCdGOLZt6lDsK@rajje.db.elephantsql.com:5432/gkdkscwo
