@@ -1,10 +1,11 @@
 import React from "react";
 
-const Leaderboard = () => {
+function Leaderboard (props) {
+  
   return (
     <div className="container">
       <h3 className="center">Leaderboard</h3>
-      <p>Hiiiiiiiiii</p>
+      <p>Hi {props.name1}</p>
     </div>
   );
 };

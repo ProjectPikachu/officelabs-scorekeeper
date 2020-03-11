@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 
 :root {
-  --success-color: #2ecc71;;
+  --success-color: #2ecc71;
   --error-color: #d81b1b;
 }
 
@@ -9,26 +9,82 @@
   box-sizing: border-box;
 }
 
-body {
+.SignUp-container {
+    display: flex;
+    justify-content: center;
+}
+
+.SignIn-container {
+    display: flex;
+    justify-content: center;
+}
+
+.NewGame-container {
+    display: flex;
+    justify-content: center;
+}
+
+.SignIn-form {
   background-color: #f9fafb;
   font-family: "Open Sans", sans-serif;
   /* display: flex; */
-  align-items: center;
+  text-align: center;
   justify-content: center;
   min-height: 100vh;
   margin: 0;
 }
 
-.container {
+.SignUp-form {
+    background-color: #f9fafb;
+    font-family: "Open Sans", sans-serif;
+    /* display: flex; */
+    text-align: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+  .NewGame-form {
+    background-color: #f9fafb;
+    font-family: "Open Sans", sans-serif;
+    /* display: flex; */
+    text-align: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+  }
+
+.SignIn-form {
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   width: 400px;
 }
-.form {
+.SignUp-form {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    width: 400px;
+  }
+
+  .NewGame-form {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    width: 400px;
+  }
+
+.SignIn-form {
   padding: 30px 40px;
 }
 
+.SignUp-form {
+  padding: 30px 40px;
+}
+
+.NewGame-form {
+    padding: 30px 40px;
+}
 
 .form-control {
   margin-bottom: 10px;
@@ -39,7 +95,7 @@ body {
 .form-control label {
   color: #777;
   display: block;
-  margin-bottom: 5px; 
+  margin-bottom: 5px;
 }
 
 .form-control input {
@@ -76,7 +132,7 @@ body {
   visibility: visible;
 }
 
-.form button {
+.SignIn-form button {
   cursor: pointer;
   background-color: #3498db;
   border: 2px solid #3498db;
@@ -88,3 +144,29 @@ body {
   margin-top: 20px;
   width: 100%;
 }
+
+.SignUp-form button {
+  cursor: pointer;
+  background-color: #3498db;
+  border: 2px solid #3498db;
+  border-radius: 4px;
+  color: #fff;
+  display: block;
+  font-size: 16px;
+  padding: 10px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.NewGame-form button {
+    cursor: pointer;
+    background-color: #3498db;
+    border: 2px solid #3498db;
+    border-radius: 4px;
+    color: #fff;
+    display: block;
+    font-size: 16px;
+    padding: 10px;
+    margin-top: 20px;
+    width: 100%;
+  }

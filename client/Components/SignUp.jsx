@@ -1,35 +1,44 @@
 import React from "react";
-import '../Styling/Style.css';
+import "../Styling/Style.css";
 
 const SignUp = () => {
   return (
     <div>
       <h3 className="center">Welcome to the scoring app. Please Sign Up!</h3>
-      <div className="container">
-      <form id="form" class="form">
-        <h2>Register With Us!</h2>
-        <div className="form-control">
-          <label for="username">Username</label>
-          <input type="text" id="username" placeholder="Enter username" />
-          <small>Error message</small>
-        </div>
-        <div className="form-control">
-          <label for="password">Password</label>
-          <input type="text" id="password" placeholder="Enter password" />
-          <small>Error message</small>
-        </div>
-        <div className="form-control">
-          <label for="password2">Confirm Password</label>
-          <input
-            type="text"
-            id="password2"
-            placeholder="Enter password again"
-          />
-          <small>Error message</small>
-        </div>
-        <button>Submit</button>
-      </form>
-    </div>
+      <div id="SignUp" className="SignUp-container">
+        <form id="SignUp-form" class="SignUp-form">
+          <div className="form-control">
+            <label for="full-name">Full Name</label>
+            <input type="text" id="full-name" placeholder="Enter full name" />
+            <small>Error message</small>
+          </div>
+          <div className="form-control">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter username" />
+            <small>Error message</small>
+          </div>
+          <div className="form-control">
+            <label for="password">Password</label>
+            <input type="text" id="password" placeholder="Enter password" />
+            <small>Error message</small>
+          </div>
+          <div className="form-control">
+            <label for="password2">Confirm Password</label>
+            <input
+              type="text"
+              id="password2"
+              placeholder="Enter password again"
+            />
+            <small>Error message</small>
+          </div>
+          <div className="form-control">
+            <label for="cohort">Cohort</label>
+            <input type="text" id="cohort" placeholder="Enter Your Cohort" />
+            <small>Error message</small>
+          </div>
+          <button>Submit</button>
+        </form>
+      </div>
     </div>
   );
 };
