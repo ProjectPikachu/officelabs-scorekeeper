@@ -18,12 +18,13 @@ const createDB = `CREATE TABLE Users
     ); 
   CREATE TABLE Games
     (   GameId SERIAL PRIMARY KEY,
-        WinnerID int,
-        LoserID int,
-        WinnerPoints int,
-        LoserPoints int,
-        WinnerConfirm BOOL,
-        LoserConfirm BOOL,
+        WinnerID int NOT NULL,
+        LoserID int NOT NULL,
+        WinnerPoints int NOT NULL,
+        LoserPoints int NOT NULL,
+        WinnerConfirm BOOL NOT NULL,
+        LoserConfirm BOOL NOT NULL,
+        posting_date DATE NOT NULL,
         Foreign Key (WinnerID) REFERENCES Users(UserID),
         Foreign Key (LoserID) REFERENCES Users(UserID)
     );
