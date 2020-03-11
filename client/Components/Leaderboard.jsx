@@ -5,7 +5,7 @@ function Leaderboard (props) {
   return (
     <div className="container">
       <h3 className="center">Leaderboard</h3>
-      <p>Hi {props.name1}</p>
+      <p>Hi {props.props.fullName}</p>
     </div>
   );
 };

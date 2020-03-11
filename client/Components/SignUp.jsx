@@ -1,12 +1,12 @@
 import React from "react";
 import "../Styling/Style.css";
 
-const SignUp = () => {
+const SignUp = (props) => {
   return (
     <div>
       <h3 className="center">Welcome to the scoring app. Please Sign Up!</h3>
       <div id="SignUp" className="SignUp-container">
-        <form id="SignUp-form" class="SignUp-form">
+        <form id="SignUp-form" className="SignUp-form" onSubmit={props.onSignUpSubmit}>
           <div className="form-control">
             <label for="full-name">Full Name</label>
             <input type="text" id="full-name" placeholder="Enter full name" />
@@ -36,7 +36,7 @@ const SignUp = () => {
             <input type="text" id="cohort" placeholder="Enter Your Cohort" />
             <small>Error message</small>
           </div>
-          <button>Submit</button>
+          <button id="SignUp-button">Submit</button>
         </form>
       </div>
     </div>

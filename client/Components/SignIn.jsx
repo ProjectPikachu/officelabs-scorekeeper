@@ -1,12 +1,12 @@
 import React from "react";
 import "../Styling/Style.css";
 
-const SignIn = () => {
+const SignIn = (props) => {
   return (
     <div>
       <h3 className="center">Please Sign In</h3>
       <div className="SignUp-container">
-      <form id="SignIn-form" className="SignIn-form">
+      <form id="SignIn-form" className="SignIn-form" onSubmit={props.onSignInSubmit}>
           <link rel="stylesheet" href="../Styling/Style.css" />
           <div className="form-control">
             <label for="username">Username</label>
