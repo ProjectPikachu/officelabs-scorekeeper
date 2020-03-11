@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.jsx",
   "scripts": {
-    "start": "nodemon server/server.js",
-    "dev": "webpack-dev-server --open",
-    "test": "jest",
+    "start": "export NODE_ENV=dev; nodemon server/server.js",
+    "dev": "export NODE_ENV=dev; webpack-dev-server --open",
+    "test": "export NODE_ENV=test; jest",
     "build": "webpack",
-    "quick": "npm run start & npm run dev"
+    "quick": "export NODE_ENV=dev; npm run start & npm run dev"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,7 @@
     "webpack-dev-server": "^3.10.1"
   },
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "node": "^13.6.0",
