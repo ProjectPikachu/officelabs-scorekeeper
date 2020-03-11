@@ -66,6 +66,19 @@ describe('AUTH:', () => {
       Fullname: 'testFullName',
     });
 
+  // function for posting to db
+  const loginUser = () => request(app)
+    .post('/auth/signin')
+    .send({
+      Username: 'TestUserName',
+      Password: 'testPassword',
+    });
+
+  const signOutRequest = (authCookie) => request(app)
+    .post('/auth/signout')
+    .set('Cookie', [`Auth=${authCookie}`])
+    .send();
+
 
   // Function for querying items in User table for Test DB
   const getUserTestDB = () => pool.query('Select * from Users where Username = \'TestUserName\'');
@@ -77,6 +90,7 @@ describe('AUTH:', () => {
       .expect(200)
       .then((res) => {
         expect(res.headers['set-cookie']).not.toEqual(undefined);
+        expect(res.body).toEqual({ Username: 'TestUserName' });
       });
     const User = await getUserTestDB();
     expect(User.rows[0].username).toEqual('TestUserName');
@@ -87,15 +101,81 @@ describe('AUTH:', () => {
   });
 
   // Return a fail message if that user has already signed up
-  // it('A user cant sign up twice', async (done) => {
-  //   await addUser();
-  //   addUser()
-  //     .expect('set-cookie', undefined)
-  //     .expect((res) => {
-  //       res.body.errorMessage = 'User Exists';
-  //     })
-  //     .expect(400, done);
-  // });
+  it('A user cant sign up twice', async (done) => {
+    await addUser();
+    await addUser()
+      .expect(400)
+      .then((res) => {
+        expect(res.body).toEqual('Username Already Exists');
+      });
+    return done();
+  });
+
+  it('User can successfully signout and log back in', async (done) => {
+    let authCookie;
+    let stringCookie;
+
+    await addUser()
+      .then((res) => {
+        [stringCookie] = res.headers['set-cookie'];
+        // console.log(stringCookie);
+        const cookieArray = stringCookie.split('; ');
+        for (let i = 0; i < cookieArray.length; i += 1) {
+          if (cookieArray[i].includes('Auth=')) {
+            authCookie = cookieArray[i].replace('Auth=', '');
+            break;
+          }
+        }
+      });
+
+    await signOutRequest(authCookie)
+      .expect(200)
+      .expect('set-cookie', 'Auth=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT');
+
+    await loginUser()
+      .expect(200)
+      .then((res) => {
+        expect(res.headers['set-cookie']).toEqual([stringCookie]);
+        expect(res.body).toEqual({ Username: 'TestUserName' });
+      });
+
+    return done();
+  });
+
+  it('User can cannot login with the wrong password', async (done) => {
+    let authCookie;
+    let stringCookie;
+
+    await addUser()
+      .then((res) => {
+        [stringCookie] = res.headers['set-cookie'];
+        // console.log(stringCookie);
+        const cookieArray = stringCookie.split('; ');
+        for (let i = 0; i < cookieArray.length; i += 1) {
+          if (cookieArray[i].includes('Auth=')) {
+            authCookie = cookieArray[i].replace('Auth=', '');
+            break;
+          }
+        }
+      });
+
+    await signOutRequest(authCookie)
+      .expect(200)
+      .expect('set-cookie', 'Auth=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT');
+
+    await request(app)
+      .post('/auth/signin')
+      .send({
+        Username: 'TestUserName',
+        Password: 'wrongPassword',
+      })
+      .expect(400)
+      .then((res) => {
+        // expect(res.headers['set-cookie']).toEqual([stringCookie]);
+      });
+
+    return done();
+  });
 });
 
 
