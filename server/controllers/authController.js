@@ -1,30 +1,29 @@
-const bcrypt = require('bcrypt');
-// const { query, closePool } = require('../models/index');
-const { Pool } = require('pg');
+const bcrypt = require("bcrypt");
 
-let cstring = 'postgresql://gkdkscwo:OEIF6xvG7T5duXS_7GlrCdGOLZt6lDsK@rajje.db.elephantsql.com:5432/gkdkscwo';
+// const { query, closePool } = require('../models/index');
+const { Pool } = require("pg");
+
+let cstring =
+  "postgresql://gkdkscwo:OEIF6xvG7T5duXS_7GlrCdGOLZt6lDsK@rajje.db.elephantsql.com:5432/gkdkscwo";
 
 // If testing environemnt, change cString to testing uri
-if (process.env.NODE_ENV === 'test') {
-  cstring = 'postgres://kkmfuxxw:8aojLeJ5SAfRdWqq4L-_m0247lneI0ex@drona.db.elephantsql.com:5432/kkmfuxxw';
+if (process.env.NODE_ENV === "test") {
+  cstring =
+    "postgres://kkmfuxxw:8aojLeJ5SAfRdWqq4L-_m0247lneI0ex@drona.db.elephantsql.com:5432/kkmfuxxw";
 }
 
 const saltRounds = 10;
-
 
 const authController = {
   signUp: (req, res, next) => {
     // console.log('signup');
     // Destructued the Req Body
-    const {
-      Username, Password, Cohort, Fullname,
-    } = req.body;
+    const { Username, Password, Cohort, Fullname } = req.body;
 
     // Query String
     const queryString = `INSERT INTO Users (Username, Password, Cohort, Fullname, AuthCookie)
     Values ($1, $2, $3, $4, $5)
     RETURNING *`;
-
 
     // Generate Encrypted Username and Password
     bcrypt.genSalt(saltRounds, async (err, salt) => {
@@ -32,21 +31,27 @@ const authController = {
       const encryptedPassword = await bcrypt.hash(Password, salt);
       const encryptedUsername = await bcrypt.hash(Username, salt);
 
-      const params = [Username, encryptedPassword, Cohort, Fullname, encryptedUsername];
+      const params = [
+        Username,
+        encryptedPassword,
+        Cohort,
+        Fullname,
+        encryptedUsername
+      ];
 
       const pool = new Pool({
-        connectionString: cstring,
+        connectionString: cstring
       });
 
-      pool.query(queryString, params, (err) => {
+      pool.query(queryString, params, err => {
         pool.end();
         if (err) {
-          if (err.detail === 'Key (username)=(TestUserName) already exists.') {
-            return next({ message: 'Username Already Exists' });
+          if (err.detail === "Key (username)=(TestUserName) already exists.") {
+            return next({ message: "Username Already Exists" });
           }
           return next(err);
         }
-        res.cookie('Auth', encryptedUsername, { httpOnly: true, secure: true });
+        res.cookie("Auth", encryptedUsername, { httpOnly: true }); //secure: true }); //encryptedUsername, { httpOnly: true, secure: true });
         res.locals = { Username };
         return next();
       });
@@ -54,12 +59,11 @@ const authController = {
   },
   signIn: async (req, res, next) => {
     try {
-      const {
-        Username, Password,
-      } = req.body;
+      const { Username, Password } = req.body;
 
       // Query String
-      const queryString = 'SELECT AuthCookie, Password FROM Users WHERE Username=$1';
+      const queryString =
+        "SELECT AuthCookie, Password FROM Users WHERE Username=$1";
       const params = [Username];
 
       const pool = new Pool({ connectionString: cstring });
@@ -74,10 +78,10 @@ const authController = {
       const passwordMatch = await bcrypt.compare(Password, encryptedPassword);
 
       if (passwordMatch) {
-        res.cookie('Auth', authCookie, { httpOnly: true, secure: true });
+        res.cookie("Auth", authCookie, { httpOnly: true, secure: true });
         res.locals = { Username };
       } else {
-        return next({ message: 'Invalid Login' });
+        return next({ message: "Invalid Login" });
       }
 
       return next();
@@ -88,10 +92,9 @@ const authController = {
     }
   },
   signOut: (req, res, next) => {
-    res.clearCookie('Auth');
+    res.clearCookie("Auth");
     next();
-  },
+  }
 };
-
 
 module.exports = authController;
