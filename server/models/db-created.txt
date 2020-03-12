@@ -18,9 +18,13 @@ CREATE TABLE Users
     Username VARCHAR(100),
     Password VARCHAR(100),
     Cohort int,
-    FullName VARCHAR(100)
+    FullName VARCHAR(100),
+    
 )
 
 
-URI:
+URI DEV:
 postgres://gkdkscwo:OEIF6xvG7T5duXS_7GlrCdGOLZt6lDsK@rajje.db.elephantsql.com:5432/gkdkscwo
+
+URI TEST:
+postgres://kkmfuxxw:8aojLeJ5SAfRdWqq4L-_m0247lneI0ex@drona.db.elephantsql.com:5432/kkmfuxxw
