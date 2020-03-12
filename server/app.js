@@ -7,6 +7,7 @@ const app = express();
 const flowTest = require('./utils/flowTest');
 
 const authRouters = require('./routers/authRoutes');
+const gameRouters = require('./routers/gameRoutes');
 
 // Global pre-processing
 app.use(
@@ -22,6 +23,7 @@ app.use(
 );
 
 app.use('/auth', authRouters);
+app.use('/game', gameRouters);
 
 app.use((err, req, res, next) => {
   const defaultErr = {
@@ -30,6 +32,7 @@ app.use((err, req, res, next) => {
     message: { err: 'An error occurred' },
   };
   const errorObj = { ...defaultErr, ...err };
+  // console.log(errorObj);
   return res.status(errorObj.status).json(errorObj.message);
 });
 
