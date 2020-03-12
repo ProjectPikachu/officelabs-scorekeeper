@@ -16,9 +16,12 @@ const saltRounds = 10;
 
 const authController = {
   signUp: (req, res, next) => {
+    // console.log(req.body);
     // console.log('signup');
     // Destructued the Req Body
     const { Username, Password, Cohort, Fullname } = req.body;
+
+    // console.log('Req.body: ', req.body);
 
     // Query String
     const queryString = `INSERT INTO Users (Username, Password, Cohort, Fullname, AuthCookie)
@@ -94,7 +97,29 @@ const authController = {
   signOut: (req, res, next) => {
     res.clearCookie("Auth");
     next();
-  }
+  },
+  checkValidLogin: async (req, res, next) => {
+    // const authCookie = req.cookie('Auth');
+    // console.log('checking');
+
+    // see if there's a valid user in the DB
+    const queryString = 'SELECT * FROM Users WHERE authcookie=$1';
+    const params = [req.cookies.Auth];
+
+    const pool = new Pool({ connectionString: cstring });
+    const queryResponse = await pool.query(queryString, params);
+    pool.end();
+
+    // if more than one row -> user is valid
+    // console.log(queryResponse.rows[0]);
+
+    if (queryResponse.rows.length === 1) {
+      // console.log(queryResponse.rows);
+      res.locals.username = queryResponse.rows[0].username;
+      return next();
+    }
+    return next({ message: { err: 'Please log in' } });
+  },
 };
 
 module.exports = authController;
