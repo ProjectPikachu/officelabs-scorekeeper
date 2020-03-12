@@ -21,7 +21,8 @@ class App extends Component {
       fullName: "",
       username: "",
       password: "",
-      cohort: null
+      cohort: null,
+      isLogged: false
     };
     this.onSignUpSubmit = this.onSignUpSubmit.bind(this);
     this.onSignInSubmit = this.onSignInSubmit.bind(this);
@@ -54,6 +55,9 @@ class App extends Component {
 
   onSignInSubmit(e) {
     e.preventDefault();
+    this.setState({
+      isLogged: true
+    });
     const username = e.target[0].value;
     const password = e.target[1].value;
     fetch("/auth/signin", {
@@ -65,13 +69,14 @@ class App extends Component {
       })
     })
       .then(response => response.json())
-      .then((response)=>{
-         if(response.status === 404){
-             console.log('Redirect');
-         }
+      .then(response => {
+        if (response.status === 404) {
+          console.log("Redirect");
+        }
       })
       .catch(error => {
-       return <Redirect to= '/'/> ;
+        console.log(this.state);
+        console.log("Error in SignInSubmit ", error);
       });
   }
 
@@ -82,7 +87,7 @@ class App extends Component {
     const player2 = e.target[2].value;
     const player2score = e.target[3].value;
 
-    console.log('e.target:  ', e.target[0].value);
+    console.log("e.target:  ", e.target[0].value);
 
     fetch("/game/addgame", {
       method: "POST",
@@ -105,7 +110,7 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
+        <Router>
         <div className="App">
           <NavBar />
           <Route
@@ -122,7 +127,11 @@ class App extends Component {
           <Route
             path="/SignIn"
             render={props => (
-              <SignIn {...props} onSignInSubmit={this.onSignInSubmit} />
+              <SignIn
+                {...props}
+                onSignInSubmit={this.onSignInSubmit}
+                isLogged={this.state.isLogged}
+              />
             )}
           />
           <Route
@@ -132,7 +141,7 @@ class App extends Component {
             )}
           />
         </div>
-      </Router>
+        </Router>
     );
   }
 }
