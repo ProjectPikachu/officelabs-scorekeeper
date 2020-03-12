@@ -36,19 +36,34 @@ class App extends Component {
     const username = e.target[1].value;
     const password = e.target[2].value;
     const cohort = e.target[4].value;
-    fetch("/auth/signup", {
+
+    console.log({
+      Fullname: fullName,
+      Username: username,
+      Password: password,
+      Cohort: cohort
+    });
+
+    fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        fullName: fullName,
-        username: username,
-        password: password,
-        cohort: cohort
+        Fullname: fullName,
+        Username: username,
+        Password: password,
+        Cohort: 16
       })
     })
       .then(response => response.json())
-      .then(console.log(response))
+      .then(response => {
+        console.log("hitting signUpSubmit");
+        this.setState({
+            username: response.Username
+        })
+        console.log(this.state);
+      })
       .catch(error => {
+        console.log("hitting signUpSubmit error");
         console.log("Error", error);
       });
   }
@@ -60,19 +75,18 @@ class App extends Component {
     });
     const username = e.target[0].value;
     const password = e.target[1].value;
-    fetch("/auth/signin", {
+    fetch("/api/auth/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        username: username,
-        password: password
+        Username: username,
+        Password: password
       })
     })
       .then(response => response.json())
       .then(response => {
-        if (response.status === 404) {
-          console.log("Redirect");
-        }
+        // now store username in state
+        console.log(response)
       })
       .catch(error => {
         console.log(this.state);
@@ -110,7 +124,7 @@ class App extends Component {
 
   render() {
     return (
-        <Router>
+      <Router>
         <div className="App">
           <NavBar />
           <Route
@@ -141,7 +155,7 @@ class App extends Component {
             )}
           />
         </div>
-        </Router>
+      </Router>
     );
   }
 }
