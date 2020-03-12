@@ -5,7 +5,7 @@
   "main": "index.jsx",
   "scripts": {
     "start": "export NODE_ENV=dev; nodemon server/server.js",
-    "dev": "export NODE_ENV=dev; webpack-dev-server --open",
+    "dev": "export NODE_ENV=development; webpack-dev-server --open",
     "test": "export NODE_ENV=test; jest --watchAll",
     "build": "webpack",
     "quick": "export NODE_ENV=dev; npm run start & npm run dev"
