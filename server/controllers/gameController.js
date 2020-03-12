@@ -81,7 +81,25 @@ const gameContoller = {
       // pool.end();
     }
   },
-  getGamers: (req, res, next) => { next(); },
+  allUsers: async (req, res, next) => {
+    const pool = new Pool({ connectionString: cstring });
+
+    // try to get all users
+    // if fails- catch and send global err
+
+    try {
+      const queryString = 'Select username, fullname from Users;';
+
+      const getUsers = await pool.query(queryString);
+
+      res.locals.allUsers = getUsers.rows;
+      return next();
+    } catch (err) {
+      return next({ message: { err: 'Unable to get Users' } });
+    } finally {
+      pool.end();
+    }
+  },
   getPending: async (req, res, next) => {
     const pool = new Pool({ connectionString: cstring });
 
@@ -127,7 +145,55 @@ const gameContoller = {
 
     next();
   },
-  leaderboard: (req, res, next) => { next(); },
+  leaderboard: async (req, res, next) => {
+    const pool = new Pool({ connectionString: cstring });
+    try {
+      const queryString = `
+        SELECT WinnerName as username, COUNT (WinnerName) as Wins
+        FROM Games
+        WHERE WinnerConfirm = true and LoserConfirm = true
+        GROUP BY username
+        ORDER BY Wins`;
+
+      let leaderboard = await pool.query(queryString);
+      leaderboard = leaderboard.rows;
+
+      const finalBoard = {};
+
+      for (let i = 0; i < leaderboard.length; i += 1) {
+        finalBoard[i + 1] = leaderboard[i];
+      }
+
+
+      res.locals.leaderboard = finalBoard;
+
+      return next();
+    } catch (err) {
+      console.log(err);
+      return next({ message: { err: 'Unable to get Leaderboard' } });
+    } finally {
+      pool.end();
+    }
+  },
+  patchGame: async (req, res, next) => {
+    const pool = new Pool({ connectionString: cstring });
+
+    const { gameid } = req.body;
+
+    try {
+      const queryString = `UPDATE Games
+      SET winnerconfirm  = 'true', loserconfirm= 'true'
+      WHERE gameid = $1;`;
+
+      await pool.query(queryString, [gameid]);
+
+      return next();
+    } catch (err) {
+      return next();
+    } finally {
+      pool.end();
+    }
+  },
 };
 
 module.exports = gameContoller;

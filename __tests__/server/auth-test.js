@@ -222,6 +222,20 @@ describe('GAMES:', () => {
     .set('Cookie', [`Auth=${authCookie}`])
     .send();
 
+  const getAllUsers = (authCookie) => request(app)
+    .get('/game/allUsers')
+    .set('Cookie', [`Auth=${authCookie}`])
+    .send();
+
+  const patchGame = (gameID, authCookie) => request(app)
+    .patch('/game/addgame')
+    .set('Cookie', [`Auth=${authCookie}`])
+    .send(gameID);
+
+  const getLeaderboard = () => request(app)
+    .get('/game/leaderboard')
+    .send();
+
   // create a new pool
   const pool = new Pool({
     connectionString: 'postgres://kkmfuxxw:8aojLeJ5SAfRdWqq4L-_m0247lneI0ex@drona.db.elephantsql.com:5432/kkmfuxxw',
@@ -385,6 +399,123 @@ describe('GAMES:', () => {
     expect(bluePendingGames.body.needsApproval).toEqual([]);
 
 
+    return done();
+  });
+
+  it('User can get all users', async (done) => {
+    // Add a user and get their cookie
+    let authCookie1;
+
+    const user1Response = await addUser(user1);
+    const [stringCookie1] = user1Response.headers['set-cookie'];
+    const cookieArray1 = stringCookie1.split('; ');
+
+    // get authCookie to send with patch
+    for (let i = 0; i < cookieArray1.length; i += 1) {
+      if (cookieArray1[i].includes('Auth=')) {
+        authCookie1 = cookieArray1[i].replace('Auth=', '');
+        break;
+      }
+    }
+
+    // Invoke a getUser function - makes a request to get all users
+    const allUsers = await getAllUsers(authCookie1);
+    expect(allUsers.status).toEqual(200);
+    expect(allUsers.body.users).toEqual([{ username: 'Red', fullname: 'red' }]);
+    return done();
+  });
+
+  it('User can approve a pending game', async (done) => {
+    // let stringCookie;
+    let authCookie1;
+    let authCookie2;
+
+    const user1Response = await addUser(user1);
+    const [stringCookie1] = user1Response.headers['set-cookie'];
+    const cookieArray1 = stringCookie1.split('; ');
+
+    // get authCookie to send with patch
+    for (let i = 0; i < cookieArray1.length; i += 1) {
+      if (cookieArray1[i].includes('Auth=')) {
+        authCookie1 = cookieArray1[i].replace('Auth=', '');
+        break;
+      }
+    }
+
+    const user2Response = await addUser(user2);
+    const [stringCookie2] = user2Response.headers['set-cookie'];
+    const cookieArray2 = stringCookie2.split('; ');
+
+    // get authCookie to send with patch
+    for (let i = 0; i < cookieArray2.length; i += 1) {
+      if (cookieArray2[i].includes('Auth=')) {
+        authCookie2 = cookieArray2[i].replace('Auth=', '');
+        break;
+      }
+    }
+
+    await addGame(game1, authCookie2);
+
+    const user1Games = await getPendingGames(authCookie1);
+    const gameInfo = { gameid: user1Games.body.needsApproval[0].gameid };
+
+    const patching = await patchGame(gameInfo, authCookie1);
+    expect(patching.status).toEqual(200);
+
+
+    const user1Games2 = await getPendingGames(authCookie1);
+    expect(user1Games2.body.needsApproval.length).toEqual(0);
+
+
+    return done();
+  });
+
+  it('User can get leaderboard', async (done) => {
+    // let stringCookie;
+    let authCookie1;
+    let authCookie2;
+
+    const user1Response = await addUser(user1);
+    const [stringCookie1] = user1Response.headers['set-cookie'];
+    const cookieArray1 = stringCookie1.split('; ');
+
+    // get authCookie to send with patch
+    for (let i = 0; i < cookieArray1.length; i += 1) {
+      if (cookieArray1[i].includes('Auth=')) {
+        authCookie1 = cookieArray1[i].replace('Auth=', '');
+        break;
+      }
+    }
+
+    const user2Response = await addUser(user2);
+    const [stringCookie2] = user2Response.headers['set-cookie'];
+    const cookieArray2 = stringCookie2.split('; ');
+
+    // get authCookie to send with patch
+    for (let i = 0; i < cookieArray2.length; i += 1) {
+      if (cookieArray2[i].includes('Auth=')) {
+        authCookie2 = cookieArray2[i].replace('Auth=', '');
+        break;
+      }
+    }
+
+    await addGame(game1, authCookie2);
+
+    const user1Games = await getPendingGames(authCookie1);
+    const gameInfo = { gameid: user1Games.body.needsApproval[0].gameid };
+
+    const patching = await patchGame(gameInfo, authCookie1);
+    expect(patching.status).toEqual(200);
+
+
+    const user1Games2 = await getPendingGames(authCookie1);
+    expect(user1Games2.body.needsApproval.length).toEqual(0);
+
+
+    // Sends a request to get a leaderboard
+    const leaders = await getLeaderboard();
+    expect(leaders.status).toEqual(200);
+    expect(leaders.body.leaderboard).toEqual({ 1: { username: 'Red', wins: '1' } }); // 2: { username: 'Blue', wins: 0 } });
     return done();
   });
 });

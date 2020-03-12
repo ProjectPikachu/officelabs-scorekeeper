@@ -9,9 +9,15 @@ router.post('/addGame/',
   gameController.addGame,
   (req, res) => res.status(200).json({}));
 
-router.post('/getGamers/',
-  gameController.getGamers,
+router.patch('/addGame/',
+  authController.checkValidLogin,
+  gameController.patchGame,
   (req, res) => res.sendStatus(200));
+
+router.get('/allUsers/',
+  authController.checkValidLogin,
+  gameController.allUsers,
+  (req, res) => res.status(200).json({ users: res.locals.allUsers }));
 
 router.get('/pending/',
   authController.checkValidLogin,
@@ -21,8 +27,8 @@ router.get('/pending/',
     waitingOnApproval: res.locals.waitingOnApproval,
   }));
 
-router.post('/leaderboard/',
+router.get('/leaderboard/',
   gameController.leaderboard,
-  (req, res) => res.status(200).json({}));
+  (req, res) => res.status(200).json({ leaderboard: res.locals.leaderboard }));
 
 module.exports = router;
